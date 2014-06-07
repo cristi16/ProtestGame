@@ -7,25 +7,21 @@ public class IndividualRequest
     public CauseStatType causeType;
     public bool isPro;
 
-    public List<HappinessLevel> people;
     public int moneyRequired;
     // variables for distinguishing between age and possibly gender 
     //in order to fetch specific dialog for each individual
-    //have a happpines level so that we know which ones to change( this is fetched in advanced based on 
-    // the current happiness level) - allows for variety in dialog + text
+    //average happiness of cause - allows for variety in dialog + text
     public int age;
     public bool isMale;
 
-    private CauseStat stat;
+    private CauseStat supportedCause;
 
-    public IndividualRequest(CauseStatType causeType, , bool isPro, 
-        List<HappinessLevel> people, int moneyRequired)
+    public IndividualRequest(CauseStatType causeType, bool isPro, int moneyRequired)
     {
         this.causeType = causeType;
-        this.people = people;
         this.isPro = isPro;
         this.moneyRequired = moneyRequired;
-        this.stat = GameController.Instance.GetCause(causeType);
+        this.supportedCause = GameController.Instance.GetCause(causeType);
     }
 
     public void FullfillRequest()
@@ -33,17 +29,17 @@ public class IndividualRequest
         GameController.Instance.moneyAmount -= moneyRequired;
 
         if(isPro)
-            stat.IncreaseHappiness(people);
+            supportedCause.AdjustHappiness(15, 10);
         else
-             stat.DecreaseHappiness(people.Count);
+            supportedCause.AdjustHappiness(15, -10);
     }
 
     public void DenyRequest()
     {
          if(isPro)
-            stat.DecreaseHappiness(people.Count);
+             supportedCause.AdjustHappiness(100, 5);
         else
-            stat.IncreaseHappiness(people);
+            supportedCause.AdjustHappiness(100, 5);
     }
     
     public void ExecuteIndividual()
@@ -57,7 +53,7 @@ public class IndividualRequest
         // So more people get interested in the cause
         if(rand == 0)
         {
-            stat.IncreaseInterest();
+            supportedCause.IncreaseInterest();
         }    
         else
         {
