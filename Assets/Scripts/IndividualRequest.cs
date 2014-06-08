@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class IndividualRequest
 {
     public CauseStatType causeType;
@@ -15,6 +16,7 @@ public class IndividualRequest
     public bool isMale;
 
     private CauseStat supportedCause;
+    public int numberOfActivists;
 
     public IndividualRequest(CauseStatType causeType, bool isPro, int moneyRequired)
     {
@@ -22,6 +24,7 @@ public class IndividualRequest
         this.isPro = isPro;
         this.moneyRequired = moneyRequired;
         this.supportedCause = GameController.Instance.GetCause(causeType);
+        numberOfActivists = Random.Range(10, 30);
     }
 
     public void FullfillRequest()
@@ -29,15 +32,15 @@ public class IndividualRequest
         GameController.Instance.moneyAmount -= moneyRequired;
 
         if(isPro)
-            supportedCause.AdjustHappiness(15, 10);
+            supportedCause.AdjustHappiness(numberOfActivists, 10);
         else
-            supportedCause.AdjustHappiness(15, -10);
+            supportedCause.AdjustHappiness(100, -5);
     }
 
     public void DenyRequest()
     {
-         if(isPro)
-             supportedCause.AdjustHappiness(100, 5);
+        if(isPro)
+            supportedCause.AdjustHappiness(numberOfActivists, -10);
         else
             supportedCause.AdjustHappiness(100, 5);
     }

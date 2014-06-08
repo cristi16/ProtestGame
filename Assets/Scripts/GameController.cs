@@ -9,11 +9,15 @@ public class GameController : MonoBehaviour
     {
         get
         {
-            if (instance = null)
+            if (instance == null)
                 instance = new GameController();
             return instance;
         }
     }
+    [HideInInspector]
+    public DialogueHandler dialogueHandler;
+    private ShowStatsPanel statsPanel;
+    private UILabel cashLabel;
 
     public List<GrowthStat> growthStats;
     public List<CauseStat> causeStats;
@@ -36,10 +40,22 @@ public class GameController : MonoBehaviour
 
     IEnumerator Start()
     {
+        dialogueHandler = GameObject.FindObjectOfType<DialogueHandler>();
+        statsPanel = GameObject.FindObjectOfType<ShowStatsPanel>();
+        cashLabel = GameObject.FindGameObjectWithTag("CashLabel").GetComponent<UILabel>();
+        cashLabel.text = moneyAmount + " $";
+
+        foreach (CauseStat cause in causeStats)
+            cause.Initialize();
+
+        yield return new WaitForSeconds(1f);
+
+        UpdateAllStats();
+
         while(true)
         {
 
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(1f);
             timeInGame = Time.time;
             //Application.LoadLevel(Application.loadedLevel);
         }
@@ -50,8 +66,17 @@ public class GameController : MonoBehaviour
         return causeStats.Find(item => item.type == type);
     }
 
-    void Update()
+    public void UpdateAllStats()
     {
+        string text = "";
 
+        foreach(CauseStat cause in causeStats)
+        {
+            text += cause.type.ToString() + "\t Avg HP: " + cause.GetAverageHappiness() + "\t Min: " + 
+                cause.GetMinHappiness() + "\t Max: " + cause.GetMaxHappiness() + "\n";
+        }
+        statsPanel.statsTextLabel.text = text;
+
+        cashLabel.text = moneyAmount + " $";
     }
 }
