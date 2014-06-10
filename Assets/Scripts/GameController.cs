@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class GameController : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class GameController : MonoBehaviour
         }
     }
     [HideInInspector]
-    public DialogueHandler dialogueHandler;
+    public DialogueHandler dialogueHandler; //h
     private ShowStatsPanel statsPanel;
     private UILabel cashLabel;
 
@@ -51,6 +52,18 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         UpdateAllStats();
+
+        string[] ListDrives = Directory.GetLogicalDrives();
+
+        foreach (string Drive in ListDrives)
+        {
+            //if (Drive.DriveType == DriveType.Removable)
+            //{
+                //Add to RemovableDrive list or whatever activity you want
+                Debug.Log(Drive);
+                Debug.Log("-------------------------------------");
+           // }
+        }
 
         while(true)
         {
